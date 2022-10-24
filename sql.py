@@ -17,14 +17,21 @@ CREATE TABLE users(
 
 def show_tables(connection):
     users_query = "DESCRIBE users"
-    users_query = "DESCRIBE users"
     
     with connection.cursor() as cursor:
         cursor.execute(users_query)
         result = cursor.fetchall()
         for row in result:
             print(row)
-        
+
+def insert_user(usrid, name, email): 
+    insert_reviewers_query = """
+    INSERT INTO users
+        (id, name, email)
+        VALUES ( %s, %s, %s )
+    """
+    pass
+
 def main():
     
     # try to connect to SQL server and print current tables
