@@ -24,13 +24,25 @@ def show_tables(connection):
         for row in result:
             print(row)
 
-def insert_user(usrid, name, email): 
-    insert_reviewers_query = """
+def top_5(connection):
+    users_query = "SELECT * FROM users LIMIT 5"
+    with connection.cursor() as cursor:
+        cursor.execute(users_query)
+        result = cursor.fetchall()
+        for row in result:
+            print(row)
+
+
+def insert_user(connection, usrid, name, email): 
+    insert_users_query = """
     INSERT INTO users
         (id, name, email)
         VALUES ( %s, %s, %s )
     """
-    pass
+    user = [(usrid, name, email)]
+    with connection.cursor() as cursor:
+        cursor.executemany(insert_users_query, user)
+        connection.commit()
 
 def main():
     
@@ -44,7 +56,8 @@ def main():
         ) as connection:
             print(connection)
             show_tables(connection)
-
+            #insert_user(connection, 12345, "Bridget Goodwine", "bgoodwin@nd.edu")
+            top_5(connection)
     except Error as e:
         print(e)
 
