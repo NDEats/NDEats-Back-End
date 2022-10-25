@@ -1,8 +1,8 @@
 # NDEats-Back-End
 
-[tutorial](https://realpython.com/python-mysql/#installing-mysql-server-and-mysql-connectorpython)
+`sql.py` is just for reference for current dev branches with info from this [tutorial](https://realpython.com/python-mysql/#installing-mysql-server-and-mysql-connectorpython)
 
-Users table
+Users table created in database bgoodwin on db student machines
 ```
 CREATE TABLE users(
     id INT PRIMARY KEY, # userinfo_response.json()["sub"]
