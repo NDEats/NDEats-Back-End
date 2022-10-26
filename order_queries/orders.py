@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 # Imports
+import datetime
 from mysql.connector import connect, Error
 
 # Globals
@@ -23,8 +24,7 @@ def add_order(connection, dropoff, pickup, tip, usrid, readyby):
             cursor.execute(sql, vals)
             connection.commit()
         except Error as e:
-            if 'foreign key constraint' in e:
-                print('ERROR: User does not exist')
+            print(e)
             return False
 
     return True
@@ -37,8 +37,13 @@ def pickup_order(connection, usrid, orderid):
         try:
             cursor.execute(q)
             result = cursor.fetchall()
-            if result[0][0] == 0:
-                print(f'ERROR: Order {orderid} is not available for pickup')
+            # TODO: error check as this might be out of range
+            if len(result) > 0 and len(result[0]) > 0:
+                if result[0][0] == 0:
+                    print(f'ERROR: Order {orderid} is not available for pickup')
+                    return False
+            else:
+                print(f'ERROR: Order {orderid} does not match any orders in DB')
                 return False
         except Error as e:
             print(e)
@@ -58,6 +63,48 @@ def pickup_order(connection, usrid, orderid):
             print(e)
             return False
     
+    return True
+
+# remove from Orders table, add to OldOrders table
+def deliver_order(connection, orderid):
+    # get order info
+    get_info = f'SELECT * from {ORDERS_TABLE} where id={orderid}'
+    # delete order from Orders table
+    delete_order = f'DELETE FROM {ORDERS_TABLE} WHERE id={orderid}'
+    # insert into the OldOrders table 
+    add_order = f'''
+    INSERT INTO {OLDORDERS_TABLE}
+        (id, dropoff, pickup, tip, deliverer_id_fk, orderer_id_fk, time_estimate)
+        VALUES ( %s, %s, %s, %s, %s, %s, %s )
+    '''
+
+    with connection.cursor() as cursor:
+        # remove from Orders table
+        try:
+            # get order info
+            cursor.execute(get_info)
+            result = cursor.fetchall()
+            # remove the waiting_for_pickup column
+            try:
+                result = list(result[0])
+                result.pop(-2)
+                result = tuple(result)
+            except:
+                return False
+            
+            # delete order from table
+            cursor.execute(delete_order)
+            connection.commit()
+        except Error as e:
+            print(e)
+        # insert into OldOrders table 
+        try:
+            cursor.execute(add_order, result)
+            connection.commit()
+        except Error as e:
+            print(e)
+            return False
+
     return True
 
 # Get available orders from orders page
@@ -135,8 +182,6 @@ def show_table(connection, table):
 
 # just for manual testing right now
 def main():
-    # try to connect to SQL server w/ input user & password
-    # to use current database: bgoodwin & pwpwpwpw
     try:
         with connect(
             host="localhost",
@@ -147,11 +192,11 @@ def main():
             database="bgoodwin",
         ) as connection:
             print(connection)
-            desc_table(connection, ORDERS_TABLE)
-            #added = add_order(connection, 'Farley Hall', 'Chic-fil-a', 8.25, 1, '1998-01-23 12:45:56')
             show_table(connection, ORDERS_TABLE)
-            pickup_order(connection, 29492, 5)
+            pickup_order(connection, 29492, 11)
+            deliver_order(connection, 11)
             show_table(connection, ORDERS_TABLE)
+            show_table(connection, OLDORDERS_TABLE)
             
     except Error as e:
         print(e)
