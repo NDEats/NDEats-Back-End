@@ -56,8 +56,10 @@ def main():
     try:
         with connect(
             host="localhost",
-            user=input("Enter username: "),
-            password=getpass("Enter password: "),
+            #user=input("Enter username: "),
+            user="bgoodwin",
+            #password=getpass("Enter password: "),
+            password="pwpwpwpw",
             database="bgoodwin",
         ) as connection:
             print(connection)
