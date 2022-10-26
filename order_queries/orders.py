@@ -37,14 +37,14 @@ ORDERS_TABLE = 'Orders'
 OLDORDERS_TABLE = 'OldOrders'
 
 
-# insert user into users table
-def add_order(connection, dropoff, pickup, tip, orderer_id, readyby):
+# insert user into users table: execute every time someone places an order
+def add_order(connection, dropoff, pickup, tip, usrid, readyby):
     sql = f'''
     INSERT INTO {ORDERS_TABLE}
         (dropoff, pickup, tip, orderer_id_fk, time_estimate)
         VALUES ( %s, %s, %s, %s, %s )
     '''
-    vals = (dropoff, pickup, tip, orderer_id, readyby)
+    vals = (dropoff, pickup, tip, usrid, readyby)
 
     with connection.cursor() as cursor:
         try:
@@ -57,9 +57,40 @@ def add_order(connection, dropoff, pickup, tip, orderer_id, readyby):
 
     return True
 
+# assign order to be delivered by usrid
+def pickup_order(connection, usrid, orderid):
+    # ensure order is available
+    q = f'SELECT waiting_for_pickup FROM {ORDERS_TABLE} WHERE id={orderid}'
+    with connection.cursor() as cursor:
+        try:
+            cursor.execute(q)
+            result = cursor.fetchall()
+            if result[0][0] == 0:
+                print(f'ERROR: Order {orderid} is not available for pickup')
+                return False
+        except Error as e:
+            print(e)
+            return False
 
+    # add usrid as deliverer for the order with orderid in the orders table
+    deliv = f'UPDATE {ORDERS_TABLE} SET deliverer_id_fk={usrid} WHERE id={orderid}' 
+    # set waiting_for_pickup to 0 so it no longer is listed as available 
+    unavailab = f'UPDATE {ORDERS_TABLE} SET waiting_for_pickup=0 WHERE id={orderid}'
+
+    with connection.cursor() as cursor:
+        try:
+            cursor.execute(deliv)
+            cursor.execute(unavailab)
+            connection.commit()
+        except Error as e:
+            print(e)
+            return False
+    
+    return True
+
+# TODO: move these functions to a debugging python sql file
 # show schema of users table
-def show_table(connection, table):
+def desc_table(connection, table):
     users_query = f'DESCRIBE {table}'
 
     with connection.cursor() as cursor:
@@ -67,6 +98,7 @@ def show_table(connection, table):
         result = cursor.fetchall()
         for row in result:
             print(row)
+        print("")
 
 
 # show data in a given table
@@ -78,8 +110,7 @@ def show_table(connection, table):
         result = cursor.fetchall()
         for row in result:
             print(row)
-
-
+        print("")
 
 
 # just for manual testing right now
@@ -96,8 +127,10 @@ def main():
             database="bgoodwin",
         ) as connection:
             print(connection)
-            #show_table(connection, ORDERS_TABLE)
-            added = add_order(connection, 'Farley Hall', 'Chic-fil-a', 8.25, 1, '1998-01-23 12:45:56')
+            desc_table(connection, ORDERS_TABLE)
+            #added = add_order(connection, 'Farley Hall', 'Chic-fil-a', 8.25, 1, '1998-01-23 12:45:56')
+            show_table(connection, ORDERS_TABLE)
+            pickup_order(connection, 29492, 5)
             show_table(connection, ORDERS_TABLE)
             
     except Error as e:
