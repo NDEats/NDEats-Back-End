@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 
-<<<<<<< HEAD
-import datetime
-from getpass import getpass
-=======
 # Imports
->>>>>>> 4fcf9334b920678d585839da0d2403de46945194
+import datetime
 from mysql.connector import connect, Error
 
 # Globals
@@ -69,7 +65,6 @@ def pickup_order(connection, usrid, orderid):
     
     return True
 
-<<<<<<< HEAD
 # remove from Orders table, add to OldOrders table
 def deliver_order(connection, orderid):
     # get order info
@@ -111,7 +106,7 @@ def deliver_order(connection, orderid):
             return False
 
     return True
-=======
+
 # Get available orders from orders page
 def get_available_orders(connection):
 
@@ -158,7 +153,6 @@ def delete_order(connection, userid, orderid):
 
     # Close Cursors
     cursor.close()
->>>>>>> 4fcf9334b920678d585839da0d2403de46945194
 
 
 # TODO: move these functions to a debugging python sql file
