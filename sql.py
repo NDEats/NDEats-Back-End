@@ -18,10 +18,12 @@ CREATE TABLE Orders(
     dropoff VARCHAR(100) NOT NULL,
     pickup VARCHAR(100) NOT NULL,
     tip FLOAT NOT NULL,
-    FOREIGN KEY(deliverer_id_fk) REFERENCES user(id),
-    FOREIGN KEY(orderer_id_fk) REFERENCES user(id) NOT NULL,
-    waiting_for_pickup BIT NOT NULL DEFAULT 1,
-    time_estimate DATETIME NOT NULL
+    deliverer_id_fk INT,
+    orderer_id_fk INT NOT NULL,
+    waiting_for_pickup INT DEFAULT 1,
+    time_estimate DATETIME NOT NULL,
+    FOREIGN KEY(deliverer_id_fk) REFERENCES Users(id),
+    FOREIGN KEY(orderer_id_fk) REFERENCES Users(id)
 )
 """
 
@@ -32,9 +34,11 @@ CREATE TABLE OldOrders(
     dropoff VARCHAR(100) NOT NULL,
     pickup VARCHAR(100) NOT NULL,
     tip FLOAT NOT NULL,
-    FOREIGN KEY(deliverer_id_fk) REFERENCES user(id),
-    FOREIGN KEY(orderer_id_fk) REFERENCES user(id) NOT NULL,
-    time_estimate DATETIME NOT NULL
+    deliverer_id_fk INT,
+    orderer_id_fk INT NOT NULL,
+    time_estimate DATETIME NOT NULL,
+    FOREIGN KEY(deliverer_id_fk) REFERENCES Users(id),
+    FOREIGN KEY(orderer_id_fk) REFERENCES Users(id)   
 )
 """
 
