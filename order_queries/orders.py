@@ -1,41 +1,13 @@
 #!/usr/bin/env python3
 
-from getpass import getpass
+# Imports
 from mysql.connector import connect, Error
 
-create_orders_table_query = """
-CREATE TABLE Orders(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    dropoff VARCHAR(100) NOT NULL,
-    pickup VARCHAR(100) NOT NULL,
-    tip FLOAT NOT NULL,
-    deliverer_id_fk INT,
-    orderer_id_fk INT NOT NULL,
-    waiting_for_pickup INT DEFAULT 1,
-    time_estimate DATETIME NOT NULL,
-    FOREIGN KEY(deliverer_id_fk) REFERENCES Users(id),
-    FOREIGN KEY(orderer_id_fk) REFERENCES Users(id)
-)
-"""
-
-# old orders = orders but do not include status elements
-create_oldorders_table_query = """
-CREATE TABLE OldOrders(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    dropoff VARCHAR(100) NOT NULL,
-    pickup VARCHAR(100) NOT NULL,
-    tip FLOAT NOT NULL,
-    deliverer_id_fk INT,
-    orderer_id_fk INT NOT NULL,
-    time_estimate DATETIME NOT NULL,
-    FOREIGN KEY(deliverer_id_fk) REFERENCES Users(id),
-    FOREIGN KEY(orderer_id_fk) REFERENCES Users(id)   
-)
-"""
-
+# Globals
 ORDERS_TABLE = 'Orders'
 OLDORDERS_TABLE = 'OldOrders'
 
+# Functions
 
 # insert user into users table: execute every time someone places an order
 def add_order(connection, dropoff, pickup, tip, usrid, readyby):
@@ -87,6 +59,54 @@ def pickup_order(connection, usrid, orderid):
             return False
     
     return True
+
+# Get available orders from orders page
+def get_available_orders(connection):
+
+    # Query
+    mysql_get_available_orders_query = f'''
+        SELECT pickup, dropoff, tip, time_estimate
+        FROM {ORDERS_TABLE}
+        WHERE waiting_for_pickup = 1
+        ORDER BY tip DESC
+    '''
+
+    # Ececute Query
+    cursor = connection.cursor()
+    cursor.execute(mysql_get_available_orders_query)
+
+    # Results
+    result = cursor.fetchall()
+    for row in result:
+        print(row)
+
+    # Close cursor
+    cursor.close()
+
+# Delete order
+def delete_order(connection, userid, orderid):
+
+    # Query
+    mysql_delete_order_query = f'''
+        DELETE FROM {ORDERS_TABLE}
+        WHERE id = {orderid} AND orderer_id_fk = {userid}
+    '''
+
+    # Execute Query
+    cursor = connection.cursor()
+
+    # Checking if order exists
+    try:
+        cursor.execute(mysql_delete_order_query)
+    except Error as e:
+        print('No such order exists. ERROR:')
+        print(e)
+
+    connection.commit()
+
+    # Close Cursors
+    cursor.close()
+
 
 # TODO: move these functions to a debugging python sql file
 # show schema of users table
