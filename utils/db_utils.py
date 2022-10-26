@@ -6,6 +6,46 @@ Basic Utils file where we can keep all handy functions
 import datetime
 from mysql.connector import connect, Error
 
+# Queries
+
+create_users_table_query = """
+CREATE TABLE Users(
+    id INT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL
+)
+"""
+
+create_orders_table_query = """
+CREATE TABLE Orders(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    dropoff VARCHAR(100) NOT NULL,
+    pickup VARCHAR(100) NOT NULL,
+    tip FLOAT NOT NULL,
+    deliverer_id_fk INT,
+    orderer_id_fk INT NOT NULL,
+    waiting_for_pickup INT DEFAULT 1,
+    time_estimate DATETIME NOT NULL,
+    FOREIGN KEY(deliverer_id_fk) REFERENCES Users(id),
+    FOREIGN KEY(orderer_id_fk) REFERENCES Users(id)
+)
+"""
+
+# old orders = orders but do not include status elements
+create_oldorders_table_query = """
+CREATE TABLE OldOrders(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    dropoff VARCHAR(100) NOT NULL,
+    pickup VARCHAR(100) NOT NULL,
+    tip FLOAT NOT NULL,
+    deliverer_id_fk INT,
+    orderer_id_fk INT NOT NULL,
+    time_estimate DATETIME NOT NULL,
+    FOREIGN KEY(deliverer_id_fk) REFERENCES Users(id),
+    FOREIGN KEY(orderer_id_fk) REFERENCES Users(id)   
+)
+"""
+
 # Functions
 
 # show schema of users table
@@ -30,6 +70,22 @@ def show_table(connection, table):
         for row in result:
             print(row)
         print("")
+
+# create all the tables with these queries
+def create_tables(connection):
+    with connection.cursor() as cursor:
+        try: 
+            cursor.execute(create_users_table_query)
+        except Error as e:
+            print(e)
+        try:
+            cursor.execute(create_orders_table_query)
+        except Error as e:
+            print(e)
+        try:
+            cursor.execute(create_oldorders_table_query)
+        except Error as e:
+            print(e)
 
 
 # NOTE: users may have to agree that payments may not be fulfilled & agree 
