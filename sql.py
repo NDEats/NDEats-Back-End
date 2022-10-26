@@ -3,18 +3,64 @@
 from getpass import getpass
 from mysql.connector import connect, Error
 
-# query to create users table w/ info from google sign in
+# saved: creation queries for all tables
 create_users_table_query = """
-CREATE TABLE users(
+CREATE TABLE Users(
     id INT PRIMARY KEY,
-    name VARCHAR(100),
-    email VARCHAR(100)
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL
 )
 """
 
+create_orders_table_query = """
+CREATE TABLE Orders(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    dropoff VARCHAR(100) NOT NULL,
+    pickup VARCHAR(100) NOT NULL,
+    tip FLOAT NOT NULL,
+    FOREIGN KEY(deliverer_id_fk) REFERENCES user(id),
+    FOREIGN KEY(orderer_id_fk) REFERENCES user(id) NOT NULL,
+    waiting_for_pickup BIT NOT NULL DEFAULT 1,
+    time_estimate DATETIME NOT NULL
+)
+"""
+
+# old orders = orders but do not include status elements
+create_oldorders_table_query = """
+CREATE TABLE OldOrders(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    dropoff VARCHAR(100) NOT NULL,
+    pickup VARCHAR(100) NOT NULL,
+    tip FLOAT NOT NULL,
+    FOREIGN KEY(deliverer_id_fk) REFERENCES user(id),
+    FOREIGN KEY(orderer_id_fk) REFERENCES user(id) NOT NULL,
+    time_estimate DATETIME NOT NULL
+)
+"""
+
+# all the tables in the database
+TABLES = {"usr": "Users", "ord": "Orders", "old": "OldOrders"}
+
+
+# only to be called in emergancy / creating on new system
+def create_tables(connection):
+    with connection.cursor() as cursor:
+        try: 
+            cursor.execute(create_users_table_query)
+        except Error as e:
+            print(e)
+        try:
+            cursor.execute(create_orders_table_query)
+        except Error as e:
+            print(e)
+        try:
+            cursor.execute(create_oldorders_table_query)
+        except Error as e:
+            print(e)
+
 # show schema of users table
-def show_tables(connection):
-    users_query = "DESCRIBE users"
+def show_table(connection, table):
+    users_query = f"DESCRIBE {table}"
 
     with connection.cursor() as cursor:
         cursor.execute(users_query)
@@ -63,8 +109,10 @@ def main():
             database="bgoodwin",
         ) as connection:
             print(connection)
-            show_tables(connection)
-            show_users(connection)
+            create_tables(connection)
+            for tbl in TABLES.values():
+                show_table(connection, tbl)
+                print("")
 
     except Error as e:
         print(e)
