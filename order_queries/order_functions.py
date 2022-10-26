@@ -2,7 +2,14 @@
 
 # Imports
 import datetime
+import sys
 from mysql.connector import connect, Error
+import os
+
+# Import Utils from other directory
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__)) + '/../'
+sys.path.insert(0, os.path.join(ROOT_DIR, 'utils'))
+from db_utils import desc_table, show_table
 
 # Globals
 ORDERS_TABLE = 'Orders'
@@ -154,30 +161,6 @@ def delete_order(connection, userid, orderid):
     # Close Cursors
     cursor.close()
 
-
-# TODO: move these functions to a debugging python sql file
-# show schema of users table
-def desc_table(connection, table):
-    users_query = f'DESCRIBE {table}'
-
-    with connection.cursor() as cursor:
-        cursor.execute(users_query)
-        result = cursor.fetchall()
-        for row in result:
-            print(row)
-        print("")
-
-
-# show data in a given table
-def show_table(connection, table):
-    users_query = f'SELECT * FROM {table}'
-
-    with connection.cursor() as cursor:
-        cursor.execute(users_query)
-        result = cursor.fetchall()
-        for row in result:
-            print(row)
-        print("")
 
 
 # just for manual testing right now
