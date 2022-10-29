@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.views import View
 from django.http import JsonResponse
 import json
-from .models import Order
+from .models import Order as OrderModel
+from .models import Person as PersonModel
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
@@ -17,23 +18,19 @@ class Order(View):
         oid = data.get('ordererId')
         rb = data.get('readyBy')
 
-        # set default values user cannot specify
-        did = None # delivererId
-        a = True   # available
-        
         # save order data in dict to create order class
         orderData = {
             'dropoff' : do,
             'pickup' : pu,
             'tip' : t,
-            'delivererId': did,
-            'ordererId': oid,
-            'available': a,
+            'delivererId': PersonModel.objects.get(id=2),
+            'ordererId': PersonModel.objects.get(id=oid),
+            'available': True,
             'readyBy': rb,
         }
         
         # create instance of order (automatically stores order in orders table)
-        order = Order.objects.create(**orderData)
+        order = OrderModel.objects.create(**orderData)
 
         # send response with order ID
         data = {
