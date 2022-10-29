@@ -34,7 +34,7 @@ class Order(View):
 
         # send response with order ID
         data = {
-            'message': f'Order created with ID: {order.id}'
+            'message': f'Order created with ID: {order.id}\n'
         }
         return JsonResponse(data, status=201)
 
