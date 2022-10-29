@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'ndeats.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE'  : 'django.db.backends.mysql',
-        'NAME'    : BASE_DIR / 'jboueri',
+        'NAME'    : 'jboueri',
         'USER'    : 'jboueri',
         'PASSWORD': 'pwpwpwpw',
         'HOST'    : 'localhost',
