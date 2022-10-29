@@ -5,7 +5,7 @@ from django.db import models
 # User Class
 class Person(models.Model):
     name = models.CharField(max_length=100)
-    email = models.CharField(max_length=100)
+    email = models.CharField(max_length=100, unique=True)
 
 # Order Class w/ User as foreign key
 class Order(models.Model):
