@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from django.http import JsonResponse
+from django.forms.models import model_to_dict
 import json
 from .models import Order as OrderModel
 from .models import Person as PersonModel
@@ -37,4 +38,28 @@ class Order(View):
             'message': f'Order created with ID: {order.id}\n'
         }
         return JsonResponse(data, status=201)
+
+    # For now, this will return all available Orders
+    def get(self, request):
+        items = OrderModel.objects.filter(available=True)
+        items_count = items.count()
+
+        items_data = []
+        for item in items:
+            items_data.append({
+                'dropoff': item.dropoff,
+                'pickup': item.pickup,
+                'tip': item.tip,
+                'delivererId': model_to_dict(item.delivererId),
+                'ordererId': model_to_dict(item.ordererId),
+                'available': item.available,
+                'readyBy': item.readyBy,
+            })
+
+        data = {
+            'items': items_data,
+            'count': items_count
+        }
+
+        return JsonResponse(data)
 
