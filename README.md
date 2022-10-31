@@ -1,12 +1,63 @@
 # NDEats-Back-End
 
-`sql.py` is just for reference for current dev branches with info from this [tutorial](https://realpython.com/python-mysql/#installing-mysql-server-and-mysql-connectorpython)
+## Running the server 
+1. Switch to `DjangoSetUp` is where all the API lives
+2. `cd ndeats`
+3. `/usr/bin/python3 manage.py runserver`
 
-Users table created in database bgoodwin on db student machines
+Note: MUST use `/usr/bin/python3`
+
+## RESTful API
+[How to consume a RESTful API in React](https://pusher.com/tutorials/consume-restful-api-react/)
+Notes: 
+* Variables are in <>, i.e. <string: dropoff location> can be replaced with Hesburg or <float: tip> can be replaced with 5.50
+* These should all be just in one line 
+* The ID of each person is returned in the response from the server when you add a person
+* Deleting an order and dropping off an order are the same request; both move the order from the orders table to the old orders table 
+
+### Syntax
+
+Add User:
 ```
-CREATE TABLE users(
-    id INT PRIMARY KEY, # userinfo_response.json()["sub"]
-    name VARCHAR(100),  # userinfo_response.json()["given_name"]
-    email VARCHAR(100), # userinfo_response.json()["email"]
-)
-``` 
+curl -X POST -H "Content-Type: application/json" http://127.0.0.1:8000/persons/ -d 
+    "\"name\":\"<str: name of user>\", 
+    \"email\":\"<str: email of user>\"}"
+```
+Add Order:
+```
+curl -X POST -H "Content-Type: application/json" http://127.0.0.1:8000/orders/ -d 
+    "{\"dropoff\":\"<string: dropoff location>\",
+    \"pickup\":\"<string: pickup location>\",
+    \"tip\":\"<float: tip>\",
+    \"ordererId\":\"<int: id of the person placing the order>\",
+    \"readyBy\":\"<timestamp (weird formatting, see exs)>\"}"
+```
+Pickup Order:
+```
+curl -X PATCH http://127.0.0.1:8000/update-order/4 -d 
+    "{\"deliverer\":\"<int: id of the person picking up the order>\"}"
+```
+Get All Available Orders:
+```
+curl -X GET http://127.0.0.1:8000/orders/
+```
+Dropoff or Delete Order:
+```
+curl -X DELETE http://127.0.0.1:8000/update-order/<int: id of the order>
+```
+
+### Examples
+Add User: 
+`curl -X POST -H "Content-Type: application/json" http://127.0.0.1:8000/persons/ -d "\"name\":\"Pat\", \"email\":\"pcarr2@nd.edu\"}"`
+
+Add Order:
+`curl -X POST -H "Content-Type: application/json" http://127.0.0.1:8000/orders/ -d "{\"dropoff\":\"Duncan Hall\",\"pickup\":\"Modern Market\",\"tip\":\"1\",\"ordererId\":\"1\",\"readyBy\":\"18:00:00\"}"`
+
+Pickup Order:
+`curl -X PATCH http://127.0.0.1:8000/update-order/4 -d "{\"deliverer\":\"2\"}"`
+
+Get Available Orders:
+`curl -X GET http://127.0.0.1:8000/orders/`
+
+Delete Order:
+`curl -X DELETE http://127.0.0.1:8000/update-order/11`
