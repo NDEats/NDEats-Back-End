@@ -1,3 +1,4 @@
+from sqlite3 import IntegrityError
 from django.shortcuts import render
 from django.views import View
 from django.http import JsonResponse
@@ -8,7 +9,40 @@ from .models import Person as PersonModel
 from .models import OldOrder as OldOrderModel
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.db.utils import IntegrityError
 
+### Person methods
+@method_decorator(csrf_exempt, name='dispatch')
+class Person(View):
+
+    # Creating a new user
+    def post(self, request):
+       
+        # Get user data
+        data = json.loads(request.body.decode("utf-8"))
+
+        personData = {
+            'name' : data.get('name'),
+            'email' : data.get('email')
+        }
+
+        # Create the object
+        try:
+            person = PersonModel.objects.create(**personData)
+            data = {
+                'message': f'User created with ID: {person.id}'
+            }
+            return JsonResponse(data, status=201)
+
+        except (IntegrityError):
+            data = {
+                'message': f'A user with the same email already exists'
+            }
+            return JsonResponse(data, status=202)  # Not sure if 202 is right
+
+
+
+### Order Methods
 @method_decorator(csrf_exempt, name='dispatch')
 class Order(View):
     # TODO: change so order_id is in the url, like OrderUpdate
