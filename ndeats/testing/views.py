@@ -72,6 +72,12 @@ class OrderUpdate(View):
          
         data = json.loads(request.body.decode("utf-8"))
         order = OrderModel.objects.get(id=order_id)
+        if not order.available:
+            data = {
+                'message': f'Order {order_id} is not available for pickup'
+            }
+            return JsonResponse(data)
+
         order.available = False # False = unavailable
         order.delivererId = PersonModel.objects.get(id=data['deliverer'])
         order.save()
