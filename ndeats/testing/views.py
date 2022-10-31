@@ -33,7 +33,7 @@ class Person(View):
             }
             return JsonResponse(data, status=201)
 
-        except (IntegrityError):
+        except IntegrityError:
             data = {
                 'message': f'A user with the same email already exists'
             }
