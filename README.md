@@ -1,11 +1,12 @@
 # NDEats-Back-End
 
 ## Running the server 
-1. Switch to `DjangoSetUp` is where all the API lives
-2. `cd ndeats`
-3. `/usr/bin/python3 manage.py runserver`
+1. Checkout branch `DjangoSetUp` 
+2. Run `./install.sh`
+3. `cd ndeats`
+4. `/usr/bin/python3 manage.py runserver`
 
-Note: MUST use `/usr/bin/python3`
+Once you run the server, you can run SOME of the examples below. You have to check that your IDs are available; i.e. you have to check that the order ID is in the `testing_orders` table and available before requesting to pickup an order. 
 
 ## RESTful API
 [How to consume a RESTful API in React](https://pusher.com/tutorials/consume-restful-api-react/)
