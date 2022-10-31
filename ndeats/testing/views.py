@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 @method_decorator(csrf_exempt, name='dispatch')
 class Order(View):
+    # TODO: change so order_id is in the url, like OrderUpdate
     def post(self, request):
         # get user specified data
         data = json.loads(request.body.decode("utf-8"))
@@ -39,6 +40,7 @@ class Order(View):
         }
         return JsonResponse(data, status=201)
 
+
     # For now, this will return all available Orders
     def get(self, request):
         items = OrderModel.objects.filter(available=True)
@@ -61,5 +63,22 @@ class Order(View):
             'count': items_count
         }
 
+        return JsonResponse(data)
+        
+        
+@method_decorator(csrf_exempt, name='dispatch')
+class OrderUpdate(View):
+    def patch(self, request, order_id):
+         
+        data = json.loads(request.body.decode("utf-8"))
+        order = OrderModel.objects.get(id=order_id)
+        order.available = False # False = unavailable
+        order.delivererId = PersonModel.objects.get(id=data['deliverer'])
+        order.save()
+
+        data = {
+            'message': f'Order {order_id} has been updated\n'
+        }
+        
         return JsonResponse(data)
 
