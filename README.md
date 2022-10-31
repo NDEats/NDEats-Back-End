@@ -10,6 +10,7 @@ Once you run the server, you can run SOME of the examples below. You have to che
 
 ## RESTful API
 [How to consume a RESTful API in React](https://pusher.com/tutorials/consume-restful-api-react/)
+
 Notes: 
 * Variables are in <>, i.e. <string: dropoff location> can be replaced with Hesburg or <float: tip> can be replaced with 5.50
 * These should all be just in one line 
