@@ -65,18 +65,13 @@ class Order(View):
         }
 
         return JsonResponse(data)
- 
+
 @method_decorator(csrf_exempt, name='dispatch')
 class OrderUpdate(View):
     def patch(self, request, order_id):
+         
         data = json.loads(request.body.decode("utf-8"))
         order = OrderModel.objects.get(id=order_id)
-        if not order.available:
-            data = {
-                'message': f'Order {order_id} is not available for pickup'
-            }
-            return JsonResponse(data)
-
         order.available = False # False = unavailable
         order.delivererId = PersonModel.objects.get(id=data['deliverer'])
         order.save()
@@ -84,7 +79,7 @@ class OrderUpdate(View):
         data = {
             'message': f'Order {order_id} has been updated\n'
         }
-        
+
         return JsonResponse(data)
 
     def delete(self, request, order_id):
@@ -100,8 +95,9 @@ class OrderUpdate(View):
         }
         
         oldorder = OldOrderModel.objects.create(**order_data)
+
         data = {
-            f'Order {order_id} was moved to Old Orders'
+            'message': f'Order {order_id} was moved to Old Orders with new id {oldorder.id}'
         }
         order.delete()
 
