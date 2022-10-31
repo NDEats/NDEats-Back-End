@@ -45,7 +45,7 @@ class OrderUpdate(View):
          
         data = json.loads(request.body.decode("utf-8"))
         order = OrderModel.objects.get(id=order_id)
-        order.available = data['available']
+        order.available = False # False = unavailable
         order.delivererId = PersonModel.objects.get(id=data['deliverer'])
         order.save()
 
