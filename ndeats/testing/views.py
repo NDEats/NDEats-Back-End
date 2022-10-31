@@ -46,6 +46,7 @@ class OrderUpdate(View):
         data = json.loads(request.body.decode("utf-8"))
         order = OrderModel.objects.get(id=order_id)
         order.available = data['available']
+        order.delivererId = PersonModel.objects.get(id=data['deliverer'])
         order.save()
 
         data = {
