@@ -5,6 +5,7 @@ from django.forms.models import model_to_dict
 import json
 from .models import Order as OrderModel
 from .models import Person as PersonModel
+from .models import OldOrder as OldOrderModel
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
@@ -64,12 +65,10 @@ class Order(View):
         }
 
         return JsonResponse(data)
-        
-        
+ 
 @method_decorator(csrf_exempt, name='dispatch')
 class OrderUpdate(View):
     def patch(self, request, order_id):
-         
         data = json.loads(request.body.decode("utf-8"))
         order = OrderModel.objects.get(id=order_id)
         if not order.available:
@@ -88,3 +87,22 @@ class OrderUpdate(View):
         
         return JsonResponse(data)
 
+    def delete(self, request, order_id):
+        order = OrderModel.objects.get(id=order_id)
+        
+        order_data = {    
+            'dropoff' :    order.dropoff,
+            'pickup' :     order.pickup,
+            'tip' :        order.tip,
+            'delivererId': order.delivererId,
+            'ordererId':   order.ordererId,
+            'readyBy':     order.readyBy,
+        }
+        
+        oldorder = OldOrderModel.objects.create(**order_data)
+        data = {
+            f'Order {order_id} was moved to Old Orders'
+        }
+        order.delete()
+
+        return JsonResponse(data)
