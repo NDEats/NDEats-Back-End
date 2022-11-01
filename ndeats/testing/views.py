@@ -37,7 +37,8 @@ class Person(View):
         except IntegrityError:
             user_id = PersonModel.objects.get(email=data.get('email')).id
             data = {
-                'message': f'A user with the same email already exists with ID: {user_id}'
+                'message': f'A user with the same email already exists with ID: {user_id}',
+                'id': user_id
             }
             return JsonResponse(data, status=202)  # Not sure if 202 is right
 
