@@ -84,6 +84,7 @@ class Order(View):
         items_data = []
         for item in items:
             items_data.append({
+                'id' : item.id,
                 'dropoff': item.dropoff,
                 'pickup': item.pickup,
                 'tip': item.tip,
