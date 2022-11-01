@@ -14,7 +14,7 @@ Once you run the server, you can run SOME of the examples below. You have to che
 Notes: 
 * Variables are in <>, i.e. <string: dropoff location> can be replaced with Hesburg or <float: tip> can be replaced with 5.50
 * These should all be just in one line 
-* The ID of each person is returned in the response from the server when you add a person
+* The ID of each person/order is returned in the response from the server when you add a person/order
 * Deleting an order and dropping off an order are the same request; both move the order from the orders table to the old orders table 
 
 ### Syntax
