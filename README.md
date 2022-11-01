@@ -36,7 +36,7 @@ curl -X POST -H "Content-Type: application/json" http://127.0.0.1:8000/orders/ -
 ```
 Pickup Order:
 ```
-curl -X PATCH http://127.0.0.1:8000/update-order/4 -d 
+curl -X PATCH http://127.0.0.1:8000/update-order/<int: id of the order being picked up> -d 
     "{\"deliverer\":\"<int: id of the person picking up the order>\"}"
 ```
 Get All Available Orders:
