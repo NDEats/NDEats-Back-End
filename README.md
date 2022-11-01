@@ -16,6 +16,7 @@ Notes:
 * These should all be just in one line 
 * The ID of each person/order is returned in the response from the server when you add a person/order
 * Deleting an order and dropping off an order are the same request; both move the order from the orders table to the old orders table 
+* All the IDs (Primary Keys in the DB) are being automatically created by Django
 
 ### Syntax
 
@@ -57,7 +58,8 @@ Add Order:
 
 Pickup Order:
 `curl -X PATCH http://127.0.0.1:8000/update-order/4 -d "{\"deliverer\":\"2\"}"`
-e.g. the '4' in update-order/4 is the OrderId
+
+> e.g. the '4' in `update-order/4` is the OrderId
 
 Get Available Orders:
 `curl -X GET http://127.0.0.1:8000/orders/`
