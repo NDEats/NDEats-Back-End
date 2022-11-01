@@ -30,7 +30,8 @@ class Person(View):
         try:
             person = PersonModel.objects.create(**personData)
             data = {
-                'message': f'User created with ID: {person.id}'
+                'message': f'User created with ID: {person.id}',
+                'id': person.id
             }
             return JsonResponse(data, status=201)
 
@@ -73,7 +74,8 @@ class Order(View):
 
         # send response with order ID
         data = {
-            'message': f'Order created with ID: {order.id}\n'
+            'message': f'Order created with ID: {order.id}',
+            'id': order.id
         }
         return JsonResponse(data, status=201)
 
@@ -114,7 +116,8 @@ class OrderUpdate(View):
         order.save()
 
         data = {
-            'message': f'Order {order_id} has been updated\n'
+            'message': f'Order {order_id} has been updated',
+            'id': order_id
         }
 
         return JsonResponse(data)
@@ -134,7 +137,9 @@ class OrderUpdate(View):
         oldorder = OldOrderModel.objects.create(**order_data)
 
         data = {
-            'message': f'Order {order_id} was moved to Old Orders with new id {oldorder.id}'
+            'message': f'Order {order_id} was moved to Old Orders with new id {oldorder.id}',
+            'order_id': order_id,
+            'oldorder_id': oldorder.id
         }
         order.delete()
 
