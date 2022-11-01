@@ -57,6 +57,7 @@ Add Order:
 
 Pickup Order:
 `curl -X PATCH http://127.0.0.1:8000/update-order/4 -d "{\"deliverer\":\"2\"}"`
+e.g. the '4' in update-order/4 is the OrderId
 
 Get Available Orders:
 `curl -X GET http://127.0.0.1:8000/orders/`
