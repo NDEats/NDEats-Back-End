@@ -66,3 +66,10 @@ Get Available Orders:
 
 Delete Order:
 `curl -X DELETE http://127.0.0.1:8000/update-order/11`
+
+### Database
+The data is stored in Django-created tables the `jboueri` database on the `mysql` setup on `db8.cse.nd.edu`; the tables have names like `testing_order` and `testing_person`
+* User: `jboueri`
+* Pass: `pwpwpwpw`
+
+The project is called `ndeats` and is stored in `ndeats/ndeats`, the app that handles the API is currently called `testing` and is located in `ndeats/testing`. 
