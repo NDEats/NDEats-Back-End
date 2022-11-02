@@ -68,7 +68,7 @@ Delete Order:
 `curl -X DELETE http://127.0.0.1:8000/update-order/11`
 
 ### Database
-The data is stored in Django-created tables the `jboueri` database on the `mysql` setup on `db8.cse.nd.edu`; the tables have names like `testing_order` and `testing_person`
+The data is stored in Django-created tables the `jboueri` database on the `mysql` setup on `db8.cse.nd.edu`; the tables have names like `testing_order` and `testing_person`; to insert data you must be on `db8.cse.nd.edu`
 * User: `jboueri`
 * Pass: `pwpwpwpw`
 
