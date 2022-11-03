@@ -55,7 +55,8 @@ class Order(View):
         do = data.get('dropoff')
         pu = data.get('pickup')
         t = data.get('tip')
-        oid = data.get('ordererId')
+        #oid = data.get('ordererId')
+        orderer_email = data.get('email')
         rb = data.get('readyBy')
 
         # save order data in dict to create order class
@@ -63,8 +64,8 @@ class Order(View):
             'dropoff' : do,
             'pickup' : pu,
             'tip' : t,
-            'delivererId': PersonModel.objects.get(id=2),
-            'ordererId': PersonModel.objects.get(id=oid),
+            'delivererId': None,
+            'ordererId': PersonModel.objects.get(email=orderer_email),
             'available': True,
             'readyBy': rb,
         }
@@ -111,7 +112,7 @@ class OrderUpdate(View):
         data = json.loads(request.body.decode("utf-8"))
         order = OrderModel.objects.get(id=order_id)
         order.available = False # False = unavailable
-        order.delivererId = PersonModel.objects.get(id=data['deliverer'])
+        order.delivererId = PersonModel.objects.get(email=data.get('email'))
         order.save()
 
         data = {
