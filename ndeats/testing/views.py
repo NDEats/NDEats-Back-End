@@ -63,6 +63,7 @@ class Order(View):
             'dropoff' : do,
             'pickup' : pu,
             'tip' : t,
+            'delivererId': None,
             'ordererId': PersonModel.objects.get(id=oid),
             'available': True,
             'readyBy': rb,
