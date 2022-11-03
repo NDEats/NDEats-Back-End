@@ -92,7 +92,6 @@ class Order(View):
                 'dropoff': item.dropoff,
                 'pickup': item.pickup,
                 'tip': item.tip,
-                'delivererId': model_to_dict(item.delivererId),
                 'ordererId': model_to_dict(item.ordererId),
                 'available': item.available,
                 'readyBy': item.readyBy,
