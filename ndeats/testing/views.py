@@ -65,7 +65,7 @@ class Order(View):
             'pickup' : pu,
             'tip' : t,
             'delivererId': None,
-            'ordererId': PersonModel.objects.filter(email=orderer_email),
+            'ordererId': PersonModel.objects.get(email=orderer_email),
             'available': True,
             'readyBy': rb,
         }
