@@ -63,13 +63,13 @@ curl -X POST -H "Content-Type: application/json" http://127.0.0.1:8000/orders/ -
     "{\"dropoff\":\"<string: dropoff location>\",
     \"pickup\":\"<string: pickup location>\",
     \"tip\":\"<float: tip>\",
-    \"ordererId\":\"<int: id of the person placing the order>\",
+    \"email\":\"<str: email of the person placing the order>\",
     \"readyBy\":\"<timestamp (weird formatting, see exs)>\"}"
 ```
 Pickup Order:
 ```
 curl -X PATCH http://127.0.0.1:8000/update-order/<int: id of the order being picked up> -d 
-    "{\"deliverer\":\"<int: id of the person picking up the order>\"}"
+    "{\"email\":\"<str: email of the person picking up the order>\"}"
 ```
 Get All Available Orders:
 ```
@@ -85,12 +85,12 @@ Add User:
 `curl -X POST -H "Content-Type: application/json" http://127.0.0.1:8000/persons/ -d "\"name\":\"Pat\", \"email\":\"pcarr2@nd.edu\"}"`
 
 Add Order:
-`curl -X POST -H "Content-Type: application/json" http://127.0.0.1:8000/orders/ -d "{\"dropoff\":\"Duncan Hall\",\"pickup\":\"Modern Market\",\"tip\":\"1\",\"ordererId\":\"1\",\"readyBy\":\"18:00:00\"}"`
+`curl -X POST -H "Content-Type: application/json" http://127.0.0.1:8000/orders/ -d "{\"dropoff\":\"Duncan Hall\",\"pickup\":\"Modern Market\",\"tip\":\"1\",\"email\":\"jboueri@nd.edu\",\"readyBy\":\"18:00:00\"}"`
 
 Pickup Order:
-`curl -X PATCH http://127.0.0.1:8000/update-order/4 -d "{\"deliverer\":\"2\"}"`
+`curl -X PATCH http://127.0.0.1:8000/update-order/4 -d "{\"email\":\"bgoodwin@nd.edu\"}"`
 
-> e.g. the '4' in `update-order/4` is the OrderId
+> e.g. the '4' in `update-order/4` is the order id
 
 Get Available Orders:
 `curl -X GET http://127.0.0.1:8000/orders/`
