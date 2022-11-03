@@ -55,7 +55,8 @@ class Order(View):
         do = data.get('dropoff')
         pu = data.get('pickup')
         t = data.get('tip')
-        oid = data.get('ordererId')
+        #oid = data.get('ordererId')
+        orderer_email = data.get('email')
         rb = data.get('readyBy')
 
         # save order data in dict to create order class
@@ -64,7 +65,7 @@ class Order(View):
             'pickup' : pu,
             'tip' : t,
             'delivererId': None,
-            'ordererId': PersonModel.objects.get(id=oid),
+            'ordererId': PersonModel.objects.filter(email=orderer_email),
             'available': True,
             'readyBy': rb,
         }
