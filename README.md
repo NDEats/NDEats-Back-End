@@ -1,7 +1,7 @@
 # NDEats-Back-End
 
 ## Running the backend server 
-1. Checkout branch `DjangoSetUp` 
+1. Checkout branch `main` 
 2. Run `./install.sh`
 3. `cd ndeats`
 4. `/usr/bin/python3 manage.py runserver`
