@@ -6,6 +6,8 @@ from django.db import models
 class Person(models.Model):
     name = models.CharField(max_length=100)
     email = models.CharField(max_length=100, unique=True)
+    password = models.CharField(max_length=100)
+    venmo = models.CharField(max_length=100)
 
 # Order Class w/ User as foreign key
 class Order(models.Model):
