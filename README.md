@@ -51,11 +51,12 @@ Notes:
 
 ### Syntax
 
-Add User:
+Add/login User (login = don't inculde name, signup = include name:
 ```
 curl -X POST -H "Content-Type: application/json" http://127.0.0.1:8000/persons/ -d 
     "\"name\":\"<str: name of user>\", 
-    \"email\":\"<str: email of user>\"}"
+    \"email\":\"<str: email of user>\",
+    \"password\":\"<str: password of user>\"}"
 ```
 Add Order:
 ```
