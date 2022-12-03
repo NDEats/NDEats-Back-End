@@ -34,7 +34,9 @@ class Person(View):
                 person = PersonModel.objects.create(**personData)
                 data = {
                     'message': f'User created with ID: {person.id}',
-                    'id': person.id
+                    'id': person.id,
+                    'email': person.email,
+                    'name': person.name
                 }
                 return JsonResponse(data, status=201)
 
@@ -73,7 +75,9 @@ class Person(View):
                 # Matching Passwords
                 data = {
                     'message': f'User successfully logged in with ID: {person.id}',
-                    'id': person.id
+                    'id': person.id,
+                    'email': person.email,
+                    'name': person.name
                 }
                 return JsonResponse(data, status=200)
     
