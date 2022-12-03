@@ -82,23 +82,42 @@ class Person(View):
         data = json.loads(request.body.decode("utf-8"))
         
         person = PersonModel.objects.get(id=data.get('id'))
-        current_orders = OrderModel.objects.filter(Orderer=person)
+        current_items = OrderModel.objects.filter(ordererId=person)
+        old_items = OldOrderModel.objects.filter(ordererId=person)
+        
+        current_orders_count = current_items.count()
+        old_orders_count = old_items.count()
 
         orders = []
-        for o in os:
+        for order in current_items:
             orders.append({
-                'id' : o.id,
-                'dropoff' : o.dropoff,
-                'pickup' : o.pickup,
-                'tip' : o.tip,
-                'ordererId' : o.ordererId,
-                'delivererId' : o.delivererId,
-                'available' : o.available,
-                'readyby' : o.readyBy
+                'id' : order.id,
+                'dropoff' : order.dropoff,
+                'pickup' : order.pickup,
+                'tip' : order.tip,
+                'ordererId' : model_to_dict(order.ordererId),
+                'delivererId' : model_to_dict(order.delivererId),
+                'available' : order.available,
+                'readyby' : order.readyBy
             })
-
+            
+        old_orders = []
+        for order in old_items:
+            old_orders.append({
+                'id' : order.id,
+                'dropoff' : order.dropoff,
+                'pickup' : order.pickup,
+                'tip' : order.tip,
+                'ordererId' : model_to_dict(order.ordererId),
+                'delivererId' : model_to_dict(order.delivererId),
+                'readyby' : order.readyBy
+            })
+        
         data = {
-            'orders' : orders
+            'current_orders' : orders,
+            'current_count' : current_orders_count,
+            'old_orders' : old_orders,
+            'old_count' : old_orders_count
         }
 
         return JsonResponse(data)
