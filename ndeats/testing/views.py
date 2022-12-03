@@ -53,6 +53,7 @@ class Person(View):
             }
             
             # See if user exists
+            print("Hello!!")
             person = PersonModel.objects.get(email=data.get('email'))
             print(person)
             if person == None:
