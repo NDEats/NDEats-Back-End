@@ -104,7 +104,7 @@ class Person(View):
         
         active_orders = []
         for order in active_items:
-            orders.append({
+            active_orders.append({
                 'id' : order.id,
                 'dropoff' : order.dropoff,
                 'pickup' : order.pickup,
