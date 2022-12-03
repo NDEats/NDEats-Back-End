@@ -20,28 +20,65 @@ class Person(View):
        
         # Get user data
         data = json.loads(request.body.decode("utf-8"))
+        
+        # Seeing if Name in data sent, ie. Signup, Not Login
+        if 'name' in data:
+            personData = {
+                'name' : data.get('name'),
+                'email' : data.get('email'),
+                'password' : data.get('password')
+            }
 
-        personData = {
-            'name' : data.get('name'),
-            'email' : data.get('email')
-        }
+            # Create the object
+            try:
+                person = PersonModel.objects.create(**personData)
+                data = {
+                    'message': f'User created with ID: {person.id}',
+                    'id': person.id
+                }
+                return JsonResponse(data, status=201)
 
-        # Create the object
-        try:
-            person = PersonModel.objects.create(**personData)
+            except IntegrityError:
+                user_id = PersonModel.objects.get(email=data.get('email')).id
+                data = {
+                    'message': f'A user with the same email already exists with ID: {user_id}',
+                    'id': 0
+                }
+                return JsonResponse(data, status=202)  # Not sure if 202 is right
+        
+        else:
+            personData = {
+                'email' : data.get('email'),
+                'password' : data.get('password')
+            }
+            
+            # See if user exists
+            person = PersonModel.objects.get(email=data.get('email'))
+            if person == None:
+                data = {
+                    'message': f'This email does not exist in the database.',
+                    'id': 0
+                }
+                return JsonResponse(data, status=202)
+            
+            # User exists, check if passwords match
+            if person.password != personData['password']:
+                data = {
+                    'message': f'Incorrect password.',
+                    'id': 0
+                }
+                return JsonResponse(data, status=202)
+            
+            # Matching Passwords
             data = {
-                'message': f'User created with ID: {person.id}',
+                'message': f'User successfully logged in with ID: {person.id}',
                 'id': person.id
             }
-            return JsonResponse(data, status=201)
-
-        except IntegrityError:
-            user_id = PersonModel.objects.get(email=data.get('email')).id
-            data = {
-                'message': f'A user with the same email already exists with ID: {user_id}',
-                'id': user_id
-            }
-            return JsonResponse(data, status=202)  # Not sure if 202 is right
+            return JsonResponse(data, status=200)
+                
+            
+            
+            
 
 
 
