@@ -27,6 +27,7 @@ class Person(View):
                 'name' : data.get('name'),
                 'email' : data.get('email'),
                 'password' : data.get('password')
+                'venmo' : data.get('venmo')
             }
 
             # Create the object
@@ -36,7 +37,8 @@ class Person(View):
                     'message': f'User created with ID: {person.id}',
                     'id': person.id,
                     'email': person.email,
-                    'name': person.name
+                    'name': person.name,
+                    'venmo': person.venmo
                 }
                 return JsonResponse(data, status=201)
 
@@ -207,12 +209,22 @@ class OrderUpdate(View):
         data = json.loads(request.body.decode("utf-8"))
         order = OrderModel.objects.get(id=order_id)
         order.available = False # False = unavailable
-        order.delivererId = PersonModel.objects.get(email=data.get('email'))
+        #order.delivererId = PersonModel.objects.get(email=data.get('email'))
+        deliverer = PersonModel.objects.get(email=data.get('email'))
+        order.delivererId = deliverer
         order.save()
+
+        # generate venmo request link from deliverer
+        note="Pay me to deliver your order posted on NDEats"
+        note = note.replace(" ", "%20")
+        request_from = order.ordererId.venmo
+        amount = order.tip
+        rlink = f"https://venmo.com/?txn=charge&audience=private&recipients={request_from}&amount={amount}&note={note}"
 
         data = {
             'message': f'Order {order_id} has been updated',
-            'id': order_id
+            'id': order_id,
+            'rlink': rlink
         }
 
         return JsonResponse(data)
