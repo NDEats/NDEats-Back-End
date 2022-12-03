@@ -81,6 +81,11 @@ Dropoff or Delete Order:
 curl -X DELETE http://127.0.0.1:8000/update-order/<int: id of the order>
 ```
 
+Get a User's Orders:
+```
+curl -X GET "Content-Type: application/json" http://127.0.0.1:8000/persons/ -d {"\"id\":\"<int: id of the current user>\"}"
+```
+
 ### Examples
 Add User: 
 `curl -X POST -H "Content-Type: application/json" http://127.0.0.1:8000/persons/ -d "\"name\":\"Pat\", \"email\":\"pcarr2@nd.edu\"}"`
@@ -98,6 +103,9 @@ Get Available Orders:
 
 Delete Order:
 `curl -X DELETE http://127.0.0.1:8000/update-order/11`
+
+Get a User's Orders:
+`curl -X GET "Content-Type: application/json" http://127.0.0.1:8001/persons/ -d {"\"id\":\"1\"}"`
 
 ### Database
 The data is stored in Django-created tables the `jboueri` database on the `mysql` setup on `db8.cse.nd.edu`; the tables have names like `testing_order` and `testing_person`; to insert data you must be on `db8.cse.nd.edu`
