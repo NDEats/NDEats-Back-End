@@ -128,6 +128,7 @@ class Person(View):
                 'pickup' : order.pickup,
                 'tip' : order.tip,
                 'ordererId' : model_to_dict(order.ordererId),
+                'delivererId' : model_to_dict(order.delivererId),
                 'readyby' : order.readyBy
             })
         
