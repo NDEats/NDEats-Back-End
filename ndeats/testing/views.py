@@ -75,13 +75,35 @@ class Person(View):
                 'id': person.id
             }
             return JsonResponse(data, status=200)
+    
+    
+    # return all orders associated with a user
+    def get(self, request):
+        data = json.loads(request.body.decode("utf-8"))
+        
+        person = PersonModel.objects.get(id=data.get('id'))
+        current_orders = OrderModel.objects.filter(Orderer=person)
+
+        orders = []
+        for o in os:
+            orders.append({
+                'id' : o.id,
+                'dropoff' : o.dropoff,
+                'pickup' : o.pickup,
+                'tip' : o.tip,
+                'ordererId' : o.ordererId,
+                'delivererId' : o.delivererId,
+                'available' : o.available,
+                'readyby' : o.readyBy
+            })
+
+        data = {
+            'orders' : orders
+        }
+
+        return JsonResponse(data)
                 
             
-            
-            
-
-
-
 ### Order Methods
 @method_decorator(csrf_exempt, name='dispatch')
 class Order(View):
