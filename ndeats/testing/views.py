@@ -26,7 +26,7 @@ class Person(View):
             personData = {
                 'name' : data.get('name'),
                 'email' : data.get('email'),
-                'password' : data.get('password')
+                'password' : data.get('password'),
                 'venmo' : data.get('venmo')
             }
 
