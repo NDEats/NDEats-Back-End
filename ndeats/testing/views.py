@@ -83,8 +83,8 @@ class Person(View):
         data = json.loads(request.body.decode("utf-8"))
         
         person = PersonModel.objects.get(id=data.get('id'))
-        current_items = OrderModel.objects.filter(ordererId=person, available=False)
-        active_items = OrderModel.objects.filter(ordererId=person, available=True)
+        current_items = OrderModel.objects.filter(ordererId=person, available=True)
+        active_items = OrderModel.objects.filter(ordererId=person, available=False)
         old_items = OldOrderModel.objects.filter(ordererId=person)
         
         current_orders_count = current_items.count()
