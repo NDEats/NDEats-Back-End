@@ -54,6 +54,7 @@ class Person(View):
             
             # See if user exists
             person = PersonModel.objects.get(email=data.get('email'))
+            print(person)
             if person == None:
                 data = {
                     'message': f'This email does not exist in the database.',
