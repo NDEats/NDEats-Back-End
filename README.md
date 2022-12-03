@@ -88,7 +88,7 @@ curl -X GET "Content-Type: application/json" http://127.0.0.1:8000/persons/ -d {
 
 ### Examples
 Add User: 
-`curl -X POST -H "Content-Type: application/json" http://127.0.0.1:8000/persons/ -d "\"name\":\"Pat\", \"email\":\"pcarr2@nd.edu\"}"`
+`curl -X POST -H "Content-Type: application/json" http://127.0.0.1:8000/persons/ -d {"\"name\":\"Jean Boueri\", \"email\":\"jboueri@nd.edu\",\"password\":\"sqlislife\", \"venmo\":\"jeanfboueri\"}"`
 
 Add Order:
 `curl -X POST -H "Content-Type: application/json" http://127.0.0.1:8000/orders/ -d "{\"dropoff\":\"Duncan Hall\",\"pickup\":\"Modern Market\",\"tip\":\"1\",\"email\":\"jboueri@nd.edu\",\"readyBy\":\"18:00:00\"}"`
