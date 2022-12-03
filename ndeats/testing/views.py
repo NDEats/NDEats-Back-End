@@ -53,10 +53,8 @@ class Person(View):
             }
             
             # See if user exists
-            print("Hello!!")
-            person = PersonModel.objects.get(email=data.get('email'))
-            print(person)
-            if person == None:
+            person_list = PersonModel.objects.filter(email=data.get('email'))
+            if person_list.count() == 0:
                 data = {
                     'message': f'This email does not exist in the database.',
                     'id': 0
@@ -64,19 +62,20 @@ class Person(View):
                 return JsonResponse(data, status=202)
             
             # User exists, check if passwords match
-            if person.password != personData['password']:
+            for person in person_list:
+                if person.password != personData['password']:
+                    data = {
+                        'message': f'Incorrect password.',
+                        'id': 0
+                    }
+                    return JsonResponse(data, status=202)
+
+                # Matching Passwords
                 data = {
-                    'message': f'Incorrect password.',
-                    'id': 0
+                    'message': f'User successfully logged in with ID: {person.id}',
+                    'id': person.id
                 }
-                return JsonResponse(data, status=202)
-            
-            # Matching Passwords
-            data = {
-                'message': f'User successfully logged in with ID: {person.id}',
-                'id': person.id
-            }
-            return JsonResponse(data, status=200)
+                return JsonResponse(data, status=200)
     
     
     # return all orders associated with a user
