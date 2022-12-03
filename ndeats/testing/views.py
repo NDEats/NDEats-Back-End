@@ -126,7 +126,6 @@ class Person(View):
                 'pickup' : order.pickup,
                 'tip' : order.tip,
                 'ordererId' : model_to_dict(order.ordererId),
-                #'delivererId' : model_to_dict(order.delivererId),
                 'readyby' : order.readyBy
             })
         
@@ -152,7 +151,6 @@ class Order(View):
         do = data.get('dropoff')
         pu = data.get('pickup')
         t = data.get('tip')
-        #oid = data.get('ordererId')
         orderer_email = data.get('email')
         rb = data.get('readyBy')
 
