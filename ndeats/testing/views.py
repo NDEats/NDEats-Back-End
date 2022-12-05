@@ -26,7 +26,8 @@ class Person(View):
             personData = {
                 'name' : data.get('name'),
                 'email' : data.get('email'),
-                'password' : data.get('password')
+                'password' : data.get('password'),
+                'venmo' : data.get('venmo')
             }
 
             # Create the object
@@ -34,7 +35,10 @@ class Person(View):
                 person = PersonModel.objects.create(**personData)
                 data = {
                     'message': f'User created with ID: {person.id}',
-                    'id': person.id
+                    'id': person.id,
+                    'email': person.email,
+                    'name': person.name,
+                    'venmo': person.venmo
                 }
                 return JsonResponse(data, status=201)
 
@@ -53,8 +57,8 @@ class Person(View):
             }
             
             # See if user exists
-            person = PersonModel.objects.get(email=data.get('email'))
-            if person == None:
+            person_list = PersonModel.objects.filter(email=data.get('email'))
+            if person_list.count() == 0:
                 data = {
                     'message': f'This email does not exist in the database.',
                     'id': 0
@@ -62,26 +66,84 @@ class Person(View):
                 return JsonResponse(data, status=202)
             
             # User exists, check if passwords match
-            if person.password != personData['password']:
+            for person in person_list:
+                if person.password != personData['password']:
+                    data = {
+                        'message': f'Incorrect password.',
+                        'id': 0
+                    }
+                    return JsonResponse(data, status=202)
+
+                # Matching Passwords
                 data = {
-                    'message': f'Incorrect password.',
-                    'id': 0
+                    'message': f'User successfully logged in with ID: {person.id}',
+                    'id': person.id,
+                    'email': person.email,
+                    'name': person.name
                 }
-                return JsonResponse(data, status=202)
+                return JsonResponse(data, status=200)
+    
+    
+    # return all orders associated with a user
+    def get(self, request):
+        data = json.loads(request.body.decode("utf-8"))
+        
+        person = PersonModel.objects.get(id=data.get('id'))
+        current_items = OrderModel.objects.filter(ordererId=person, available=True)
+        active_items = OrderModel.objects.filter(ordererId=person, available=False)
+        old_items = OldOrderModel.objects.filter(ordererId=person)
+        
+        current_orders_count = current_items.count()
+        active_orders_count = active_items.count()
+        old_orders_count = old_items.count()
+
+        orders = []
+        for order in current_items:
+            orders.append({
+                'id' : order.id,
+                'dropoff' : order.dropoff,
+                'pickup' : order.pickup,
+                'tip' : order.tip,
+                'ordererId' : model_to_dict(order.ordererId),
+                'readyby' : order.readyBy
+            })
+        
+        active_orders = []
+        for order in active_items:
+            active_orders.append({
+                'id' : order.id,
+                'dropoff' : order.dropoff,
+                'pickup' : order.pickup,
+                'tip' : order.tip,
+                'ordererId' : model_to_dict(order.ordererId),
+                'delivererId' : model_to_dict(order.delivererId),
+                'readyby' : order.readyBy
+            })
             
-            # Matching Passwords
-            data = {
-                'message': f'User successfully logged in with ID: {person.id}',
-                'id': person.id
-            }
-            return JsonResponse(data, status=200)
+        old_orders = []
+        for order in old_items:
+            old_orders.append({
+                'id' : order.id,
+                'dropoff' : order.dropoff,
+                'pickup' : order.pickup,
+                'tip' : order.tip,
+                'ordererId' : model_to_dict(order.ordererId),
+                'delivererId' : model_to_dict(order.delivererId),
+                'readyby' : order.readyBy
+            })
+        
+        data = {
+            'current_orders' : orders,
+            'current_count' : current_orders_count,
+            'active_orders' : active_orders,
+            'active_count' : active_orders_count,
+            'old_orders' : old_orders,
+            'old_count' : old_orders_count
+        }
+
+        return JsonResponse(data)
                 
             
-            
-            
-
-
-
 ### Order Methods
 @method_decorator(csrf_exempt, name='dispatch')
 class Order(View):
@@ -92,7 +154,6 @@ class Order(View):
         do = data.get('dropoff')
         pu = data.get('pickup')
         t = data.get('tip')
-        #oid = data.get('ordererId')
         orderer_email = data.get('email')
         rb = data.get('readyBy')
 
@@ -149,12 +210,22 @@ class OrderUpdate(View):
         data = json.loads(request.body.decode("utf-8"))
         order = OrderModel.objects.get(id=order_id)
         order.available = False # False = unavailable
-        order.delivererId = PersonModel.objects.get(email=data.get('email'))
+        #order.delivererId = PersonModel.objects.get(email=data.get('email'))
+        deliverer = PersonModel.objects.get(email=data.get('email'))
+        order.delivererId = deliverer
         order.save()
+
+        # generate venmo request link from deliverer
+        note="Pay me to deliver your order posted on NDEats"
+        note = note.replace(" ", "%20")
+        request_from = order.ordererId.venmo
+        amount = order.tip
+        rlink = f"https://venmo.com/?txn=charge&audience=private&recipients={request_from}&amount={amount}&note={note}"
 
         data = {
             'message': f'Order {order_id} has been updated',
-            'id': order_id
+            'id': order_id,
+            'rlink': rlink
         }
 
         return JsonResponse(data)

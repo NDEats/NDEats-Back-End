@@ -54,7 +54,7 @@ Notes:
 Add/login User (login = don't inculde name, signup = include name:
 ```
 curl -X POST -H "Content-Type: application/json" http://127.0.0.1:8000/persons/ -d 
-    "\"name\":\"<str: name of user>\", 
+    {"\"name\":\"<str: name of user>\", 
     \"email\":\"<str: email of user>\",
     \"password\":\"<str: password of user>\"}"
 ```
@@ -81,9 +81,14 @@ Dropoff or Delete Order:
 curl -X DELETE http://127.0.0.1:8000/update-order/<int: id of the order>
 ```
 
+Get a User's Orders:
+```
+curl -X GET "Content-Type: application/json" http://127.0.0.1:8000/persons/ -d {"\"id\":\"<int: id of the current user>\"}"
+```
+
 ### Examples
 Add User: 
-`curl -X POST -H "Content-Type: application/json" http://127.0.0.1:8000/persons/ -d "\"name\":\"Pat\", \"email\":\"pcarr2@nd.edu\"}"`
+`curl -X POST -H "Content-Type: application/json" http://127.0.0.1:8000/persons/ -d {"\"name\":\"Jean Boueri\", \"email\":\"jboueri@nd.edu\",\"password\":\"sqlislife\", \"venmo\":\"jeanfboueri\"}"`
 
 Add Order:
 `curl -X POST -H "Content-Type: application/json" http://127.0.0.1:8000/orders/ -d "{\"dropoff\":\"Duncan Hall\",\"pickup\":\"Modern Market\",\"tip\":\"1\",\"email\":\"jboueri@nd.edu\",\"readyBy\":\"18:00:00\"}"`
@@ -98,6 +103,9 @@ Get Available Orders:
 
 Delete Order:
 `curl -X DELETE http://127.0.0.1:8000/update-order/11`
+
+Get a User's Orders:
+`curl -X GET "Content-Type: application/json" http://127.0.0.1:8001/persons/ -d {"\"id\":\"1\"}"`
 
 ### Database
 The data is stored in Django-created tables the `jboueri` database on the `mysql` setup on `db8.cse.nd.edu`; the tables have names like `testing_order` and `testing_person`; to insert data you must be on `db8.cse.nd.edu`
