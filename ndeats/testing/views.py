@@ -85,10 +85,9 @@ class Person(View):
     
     
     # return all orders associated with a user
-    def get(self, request):
-        data = json.loads(request.body.decode("utf-8"))
+    def get(self, request, person_id):
         
-        person = PersonModel.objects.get(id=data.get('id'))
+        person = PersonModel.objects.get(id=person_id)
         current_items = OrderModel.objects.filter(ordererId=person, available=True)
         active_items = OrderModel.objects.filter(ordererId=person, available=False)
         old_items = OldOrderModel.objects.filter(ordererId=person)
