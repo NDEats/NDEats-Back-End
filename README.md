@@ -83,7 +83,7 @@ curl -X DELETE http://127.0.0.1:8000/update-order/<int: id of the order>
 
 Get a User's Orders:
 ```
-curl -X GET "Content-Type: application/json" http://127.0.0.1:8000/persons/ -d {"\"id\":\"<int: id of the current user>\"}"
+curl -X GET http://127.0.0.1:8000/persons/<int: id of the current user>
 ```
 
 ### Examples
@@ -105,7 +105,7 @@ Delete Order:
 `curl -X DELETE http://127.0.0.1:8000/update-order/11`
 
 Get a User's Orders:
-`curl -X GET "Content-Type: application/json" http://127.0.0.1:8001/persons/ -d {"\"id\":\"1\"}"`
+`curl -X GET http://127.0.0.1:8000/persons/6`
 
 ### Database
 The data is stored in Django-created tables the `jboueri` database on the `mysql` setup on `db8.cse.nd.edu`; the tables have names like `testing_order` and `testing_person`; to insert data you must be on `db8.cse.nd.edu`
