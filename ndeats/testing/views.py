@@ -223,9 +223,12 @@ class OrderUpdate(View):
         order = OrderModel.objects.get(id=order_id)
         order.available = False # False = unavailable
         #order.delivererId = PersonModel.objects.get(email=data.get('email'))
+        # get deliverer 
         deliverer = PersonModel.objects.get(email=data.get('email'))
         order.delivererId = deliverer
         order.save()
+        # get orderer
+        orderer   = order.ordererId
 
         # generate venmo request link from deliverer
         note="Pay me to deliver your order posted on NDEats"
@@ -240,17 +243,69 @@ class OrderUpdate(View):
             'rlink': rlink
         }
 
+        # send confirmation emails
         context = ssl.create_default_context()
-        message = """\
-                Subject: hi :)
 
-                message from python"""
+        deliverer_message = MIMEMultipart("alternative")
+        deliverer_message["Subject"] = "NDEats Pickup Confirmation"
+        deliverer_message["From"] = 'NDEats'
+        deliverer_message["To"] = deliverer.email
 
+        orderer_message = MIMEMultipart("alternative")
+        orderer_message["Subject"] = "NDEats Pickup Confirmation"
+        orderer_message["From"] = 'NDEats'
+        orderer_message["To"] = orderer.email
+
+        # build deliverer email
+        text = ''
+        text += f'Hello, {deliverer.name}!\n'
+        text += f'\n'
+        text += f'Your pickup of order #{order_id} has been confirmed. '
+        text += f'You may request your tip of ${order.tip} on Venmo: {rlink}\n\n'
+        text += f'Please pickup {orderer.name}\'s order from {order.pickup} at {order.readyBy}, '
+        text += f'and deliver it to {order.dropoff}.\n\n'
+        text += f'Remember, it\'s not a bad idea to ensure your Venmo request has been '
+        text += f'fulfilled before handing over the food!\n\n'
+        text += f'Happy delivering,\nNDEats'
+
+        html = ''
+        html += f'<html><body><p>Hello, {deliverer.name}!<br><br>'
+        html += f'Your decision to pick up order #{order_id} has been confirmed. '
+        html += f'<a href="{rlink}">Click here</a>'
+        html += f' to request your tip of ${order.tip} on Venmo.<br><br>'
+        html += f'Please pickup {orderer.name}\'s order from {order.pickup} at {order.readyBy}, '
+        html += f'and deliver it to {order.dropoff}.<br><br>'
+        html += f'Remember, it\'s not a bad idea to ensure your Venmo request has been '
+        html += f'fulfilled before handing over the food!<br><br>'
+        html += f'Happy delivering,<br>NDEats'
+        html += '</p></body></html>'
+
+        # build orderer email (no links = no need for html)
+        orderer_text = ''
+        orderer_text += f'Hello, {orderer.name}!\n'
+        orderer_text += f'\n'
+        orderer_text += f'Your order from {order.pickup} (#{order_id}) has been selected for pickup by {deliverer.name}. '
+        orderer_text += f'Please keep an eye out for a Venmo request of ${order.tip}!\n\n'
+        orderer_text += f'Happy munching,\nNDEats'
+
+        # convert to email format
+        body_plain = MIMEText(text, 'plain')
+        body_html = MIMEText(html, 'html')
+        orderer_body = MIMEText(orderer_text, 'plain')
+
+        deliverer_message.attach(body_plain)
+        deliverer_message.attach(body_html)
+        # email client will try to render the last subpart first (html) and render the first
+        # one if that fails (plain)
+        orderer_message.attach(orderer_body)
+
+        # send the emails 
         try:
             server = smtplib.SMTP(SMPT_SERVER,PORT)
             server.starttls(context=context)
             server.login(SENDER_EMAIL, GMAIL_APP_PASSWD)
-            server.sendmail(SENDER_EMAIL, "bgoodwin@nd.edu", message)
+            server.sendmail(SENDER_EMAIL, deliverer.email, deliverer_message.as_string())
+            server.sendmail(SENDER_EMAIL, orderer.email, orderer_message.as_string())
         except Exception as e:
             print(e)
         finally:
