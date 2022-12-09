@@ -10,6 +10,15 @@ from .models import OldOrder as OldOrderModel
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.db.utils import IntegrityError
+import smtplib, ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+
+GMAIL_APP_PASSWD = 'idutlyhuycawqpuj'
+SENDER_EMAIL = 'notredameeats@gmail.com'
+PORT = 587  # For starttls
+SMPT_SERVER = "smtp.gmail.com"
 
 ### Person methods
 @method_decorator(csrf_exempt, name='dispatch')
@@ -206,7 +215,10 @@ class Order(View):
 @method_decorator(csrf_exempt, name='dispatch')
 class OrderUpdate(View):
     def patch(self, request, order_id):
-         
+        #GMAIL_APP_PASSWD = 'idutlyhuycawqpuj'
+        #PORT = 587  # For starttls
+        #SENDER_EMAIL = 'notredameeats@gmail.com'
+        #SMPT_SERVER = "smtp.gmail.com"
         data = json.loads(request.body.decode("utf-8"))
         order = OrderModel.objects.get(id=order_id)
         order.available = False # False = unavailable
@@ -227,6 +239,22 @@ class OrderUpdate(View):
             'id': order_id,
             'rlink': rlink
         }
+
+        context = ssl.create_default_context()
+        message = """\
+                Subject: hi :)
+
+                message from python"""
+
+        try:
+            server = smtplib.SMTP(SMPT_SERVER,PORT)
+            server.starttls(context=context)
+            server.login(SENDER_EMAIL, GMAIL_APP_PASSWD)
+            server.sendmail(SENDER_EMAIL, "bgoodwin@nd.edu", message)
+        except Exception as e:
+            print(e)
+        finally:
+            server.quit()
 
         return JsonResponse(data)
 
