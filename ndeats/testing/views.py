@@ -97,36 +97,62 @@ class Person(View):
     def get(self, request, person_id):
         
         person = PersonModel.objects.get(id=person_id)
-        current_items = OrderModel.objects.filter(ordererId=person, available=True)
-        active_items = OrderModel.objects.filter(ordererId=person, available=False)
-        old_items = OldOrderModel.objects.filter(ordererId=person)
         
-        current_orders_count = current_items.count()
-        active_orders_count = active_items.count()
-        old_orders_count = old_items.count()
+        # Orders that the user is currently picking up
+        pickedup_items = OrderModel.objects.filter(delivererId=person)
 
-        orders = []
-        for order in current_items:
-            orders.append({
-                'id' : order.id,
-                'dropoff' : order.dropoff,
-                'pickup' : order.pickup,
-                'tip' : order.tip,
-                'ordererId' : model_to_dict(order.ordererId),
-                'readyby' : order.readyBy
-            })
+        # Current Items are My Orders that haven't been picked up
+        current_items = OrderModel.objects.filter(ordererId=person)
+
+        # Completed Orders that were created by user and delivered by user
+        old_items = OldOrderModel.objects.filter(ordererId=person) | OldOrderModel.objects.filter(delivererId=person)
         
-        active_orders = []
-        for order in active_items:
-            active_orders.append({
+        pickedup_count = pickedup_items.count()
+        current_orders_count = current_items.count()
+        old_orders_count = old_items.count()
+        
+        pickedup_orders = []
+        for order in pickedup_items:
+            pickedup_orders.append({
                 'id' : order.id,
                 'dropoff' : order.dropoff,
                 'pickup' : order.pickup,
                 'tip' : order.tip,
-                'ordererId' : model_to_dict(order.ordererId),
-                'delivererId' : model_to_dict(order.delivererId),
+                'orderer_name' : order.ordererId.name,
+                'orderer_email' : order.ordererId.email,
+                'deliverer_name' : order.delivererId.name,
+                'deliverer_email' : order.delivererId.email,
                 'readyby' : order.readyBy
             })
+
+
+        current_orders = []
+        for order in current_items:
+            if order.delivererId:
+                current_orders.append({
+                    'id' : order.id,
+                    'dropoff' : order.dropoff,
+                    'pickup' : order.pickup,
+                    'tip' : order.tip,
+                    'orderer_name' : order.ordererId.name,
+                    'orderer_email' : order.ordererId.email,
+                    'deliverer_name' : order.delivererId.name,
+                    'deliverer_email' : order.delivererId.email,
+                    'readyby' : order.readyBy
+                })
+            else:
+                current_orders.append({
+                    'id' : order.id,
+                    'dropoff' : order.dropoff,
+                    'pickup' : order.pickup,
+                    'tip' : order.tip,
+                    'orderer_name' : order.ordererId.name,
+                    'orderer_email' : order.ordererId.email,
+                    'deliverer_name' : 'Searching for deliverer ...',
+                    'deliverer_email' : 'Searching for deliverer ...',
+                    'readyby' : order.readyBy
+                })
+                
             
         old_orders = []
         for order in old_items:
@@ -135,16 +161,18 @@ class Person(View):
                 'dropoff' : order.dropoff,
                 'pickup' : order.pickup,
                 'tip' : order.tip,
-                'ordererId' : model_to_dict(order.ordererId),
-                'delivererId' : model_to_dict(order.delivererId),
+                'orderer_name' : order.ordererId.name,
+                'orderer_email' : order.ordererId.email,
+                'deliverer_name' : order.delivererId.name,
+                'deliverer_email' : order.delivererId.email,
                 'readyby' : order.readyBy
             })
         
         data = {
-            'current_orders' : orders,
+            'pickedup_orders' : pickedup_orders,
+            'pickedup_count' : pickedup_count,
+            'current_orders' : current_orders,
             'current_count' : current_orders_count,
-            'active_orders' : active_orders,
-            'active_count' : active_orders_count,
             'old_orders' : old_orders,
             'old_count' : old_orders_count
         }
