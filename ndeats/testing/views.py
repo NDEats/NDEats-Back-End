@@ -15,11 +15,61 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from math import radians, cos, sin, asin, sqrt
 
+# Globals (email related)
 
 GMAIL_APP_PASSWD = 'idutlyhuycawqpuj'
 SENDER_EMAIL = 'notredameeats@gmail.com'
 PORT = 587  # For starttls
 SMPT_SERVER = "smtp.gmail.com"
+
+# Globals (Location Related)
+
+LAT_LON_MAP = {
+    'Duncan Student Center': {
+        'lat': 41.6983809,
+        'lon': -86.2352287
+    },
+    
+    'Lafortune Student Center': {
+        'lat': 41.701962,
+        'lon': -86.237623
+    },
+    
+    'Hesburgh Library': {
+        'lat': 41.702358,
+        'lon': -86.234192
+    },
+    
+    'Hesburgh Center': {
+        'lat': 41.696376,
+        'lon': -86.237703
+    },
+    
+    'Decio Faculty Hall': {
+        'lat': 41.7002585,
+        'lon': -86.2347036
+    },
+    
+    'Hammes Book Store': {
+        'lat': 41.692602,
+        'lon': -86.2352639
+    }
+}
+
+RESTAURANT_MAPPING = {
+    'Chick-fil-A': 'Duncan Student Center',
+    'Modern Market': 'Duncan Student Center',
+    'Hagerty Family Cafe': 'Duncan Student Center',
+    'Smashburger': 'Lafortune Student Center',
+    'Taco Bell': 'Lafortune Student Center',
+    'Starbucks': 'Lafortune Student Center',
+    'Flip Kitchen': 'Lafortune Student Center',
+    'The Noodle Nook': 'Lafortune Student Center',
+    'Au Bon Pain': 'Hesburgh Library',
+    'Garbanzo Mediterranean Fresh': 'Hesburgh Center',
+    'Decio Cafe': 'Decio Faculty Hall',
+    'The Gilded Bean': 'Hammes Book Store'
+}
 
 # Function to Calculate the Distance Between Two Points (Latitude / Longitude)
 # Returns the Distance in KM or Miles if mi == True
@@ -249,9 +299,9 @@ class Order(View):
         items_count = items.count()
         
         # Get user latitude / longitude info
-        data = json.loads(request.body.decode("utf-8"))
-        user_latitude = data['latitude']
-        user_longitude = data['longitude']
+        #data = json.loads(request.body.decode("utf-8"))
+        #user_latitude = data['latitude']
+        #user_longitude = data['longitude']
         
         # TODO: Think about how we will sort the items_data by distance
 
