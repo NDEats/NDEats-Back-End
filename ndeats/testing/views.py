@@ -13,12 +13,39 @@ from django.db.utils import IntegrityError
 import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from math import radians, cos, sin, asin, sqrt
 
 
 GMAIL_APP_PASSWD = 'idutlyhuycawqpuj'
 SENDER_EMAIL = 'notredameeats@gmail.com'
 PORT = 587  # For starttls
 SMPT_SERVER = "smtp.gmail.com"
+
+# Function to Calculate the Distance Between Two Points (Latitude / Longitude)
+# Returns the Distance in KM or Miles if mi == True
+def earth_distance(lat1, lat2, lon1, lon2, mi=False):
+    
+    # The math module contains a function named
+    # radians which converts from degrees to radians.
+    lon1 = radians(lon1)
+    lon2 = radians(lon2)
+    lat1 = radians(lat1)
+    lat2 = radians(lat2)
+      
+    # Haversine formula
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
+ 
+    c = 2 * asin(sqrt(a))
+    
+    # Radius of earth in kilometers. Use 3956 for miles
+    r = 6371 if mi == False else 3956
+      
+    # calculate the result
+    return(c * r)
+
+
 
 ### Person methods
 @method_decorator(csrf_exempt, name='dispatch')
@@ -216,9 +243,17 @@ class Order(View):
 
 
     # For now, this will return all available Orders
+    # This is where we want to do the GPS shit
     def get(self, request):
         items = OrderModel.objects.filter(available=True)
         items_count = items.count()
+        
+        # Get user latitude / longitude info
+        data = json.loads(request.body.decode("utf-8"))
+        user_latitude = data['latitude']
+        user_longitude = data['longitude']
+        
+        # TODO: Think about how we will sort the items_data by distance
 
         items_data = []
         for item in items:
