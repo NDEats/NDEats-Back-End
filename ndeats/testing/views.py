@@ -242,15 +242,9 @@ class Order(View):
 @method_decorator(csrf_exempt, name='dispatch')
 class OrderUpdate(View):
     def patch(self, request, order_id):
-        #GMAIL_APP_PASSWD = 'idutlyhuycawqpuj'
-        #PORT = 587  # For starttls
-        #SENDER_EMAIL = 'notredameeats@gmail.com'
-        #SMPT_SERVER = "smtp.gmail.com"
         data = json.loads(request.body.decode("utf-8"))
         order = OrderModel.objects.get(id=order_id)
         order.available = False # False = unavailable
-        #order.delivererId = PersonModel.objects.get(email=data.get('email'))
-        # get deliverer 
         deliverer = PersonModel.objects.get(email=data.get('email'))
         order.delivererId = deliverer
         order.save()
@@ -266,8 +260,7 @@ class OrderUpdate(View):
 
         data = {
             'message': f'Order {order_id} has been updated',
-            'id': order_id,
-            'rlink': rlink
+            'id': order_id
         }
 
         # send confirmation emails
