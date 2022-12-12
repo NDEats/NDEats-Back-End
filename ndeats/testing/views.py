@@ -227,7 +227,8 @@ class Order(View):
                 'dropoff': item.dropoff,
                 'pickup': item.pickup,
                 'tip': item.tip,
-                'ordererId': model_to_dict(item.ordererId),
+                'orderer_name': item.ordererId.name,
+                'orderer_email': item.ordererId.email,
                 'available': item.available,
                 'readyBy': item.readyBy,
             })
