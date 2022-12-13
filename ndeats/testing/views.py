@@ -299,8 +299,8 @@ class Order(View):
         items_count = items.count()
         
         # Get user latitude / longitude info
-        user_latitude = 0
-        user_longitude = 0
+        user_latitude = 41.698129    # This default is a random spot by Duncan Student Center
+        user_longitude = -86.236038
         try:
             data = json.loads(request.body.decode("utf-8"))
             user_latitude = data.get('latitude')
