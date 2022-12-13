@@ -326,6 +326,8 @@ class Order(View):
                 'readyBy': item.readyBy,
                 'distance_from_user': dist,
             })
+            
+        # Possibly Sort Here!! (first by ready by, then by distance)
 
         data = {
             'items': items_data,
