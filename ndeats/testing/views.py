@@ -302,11 +302,19 @@ class Order(View):
         #data = json.loads(request.body.decode("utf-8"))
         #user_latitude = data['latitude']
         #user_longitude = data['longitude']
-        
-        # TODO: Think about how we will sort the items_data by distance
+
+        # Mock Values
+        user_latitude = 41.698533
+        user_longitude = -86.236899
 
         items_data = []
         for item in items:
+
+            item_building = RESTAURANT_MAPPING[item.pickup]
+            lat2 = LAT_LON_MAP[item_building]['lat']
+            lon2 = LAT_LON_MAP[item_building]['lon']
+            dist = earth_distance(user_latitude, lat2, user_longitude, lon2)
+
             items_data.append({
                 'id' : item.id,
                 'dropoff': item.dropoff,
@@ -316,6 +324,7 @@ class Order(View):
                 'orderer_email': item.ordererId.email,
                 'available': item.available,
                 'readyBy': item.readyBy,
+                'distance_from_user': dist,
             })
 
         data = {
