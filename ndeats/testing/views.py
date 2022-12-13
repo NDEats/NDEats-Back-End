@@ -299,13 +299,15 @@ class Order(View):
         items_count = items.count()
         
         # Get user latitude / longitude info
-        #data = json.loads(request.body.decode("utf-8"))
-        #user_latitude = data['latitude']
-        #user_longitude = data['longitude']
-
-        # Mock Values
-        user_latitude = 41.698533
-        user_longitude = -86.236899
+        user_latitude = 0
+        user_longitude = 0
+        try:
+            data = json.loads(request.body.decode("utf-8"))
+            user_latitude = data['latitude']
+            user_longitude = data['longitude']
+        except:
+            pass
+        
 
         items_data = []
         for item in items:
