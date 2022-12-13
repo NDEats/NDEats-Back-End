@@ -31,9 +31,10 @@ export NVM_DIR="$HOME/.nvm"
 10. `git clone git@github.com:NDEats/NDEats-Front-End.git`
 11. `cd NDEats-Front-End/nd-eats-front`
 12. (Note: this step might not be necessary, feel free to test if it is or not) remove the `package-lock.json` file
-13. `npm i` to install 
-14. `npm start` to start app 
-15. This command should open http://localhost:3000 and you should be able to view the app; use VSCode for automatic port forwarding from db8
+13. `npm install gh-pages --save-dev`
+14. `npm i` to install 
+15. `npm start` to start app 
+16. This command should open http://localhost:3000 and you should be able to view the app; use VSCode for automatic port forwarding from db8
 
 After all this, you should be able to run just with `npm start`
 
