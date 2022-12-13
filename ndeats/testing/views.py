@@ -303,10 +303,10 @@ class Order(View):
         user_longitude = 0
         try:
             data = json.loads(request.body.decode("utf-8"))
-            user_latitude = data['latitude']
-            user_longitude = data['longitude']
+            user_latitude = data.get('latitude')
+            user_longitude = data.get('longitude')
         except:
-            pass
+            print('hi')
         
 
         items_data = []
