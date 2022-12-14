@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-o%r0!$_fik#i62mqi3mu47m5#=jxw*-lia#mhhw2f^w_r%f9e*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['db8.cse.nd.edu']
 
 
 # Application definition
@@ -155,4 +155,7 @@ CORS_ALLOW_METHODS = [
 
 CORS_ALLOWED_ORIGINS = [
 "http://localhost:3000",
+"http://db8.cse.nd.edu:5005",
+"http://db8.cse.nd.edu:5004",
+"http://db8.cse.nd.edu:5003",
 ]
