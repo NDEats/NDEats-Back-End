@@ -109,8 +109,8 @@ Get a User's Orders:
 `curl -X GET http://127.0.0.1:8000/persons/6`
 
 ### Database
-The data is stored in Django-created tables the `cboumalh` database on the `mysql` setup on `db8.cse.nd.edu`; the tables have names like `testing_order` and `testing_person`; to insert data you must be on `db8.cse.nd.edu`
-* User: `cboumalh`
+The data is stored in Django-created tables the `jboueri` database on the `mysql` setup on `db8.cse.nd.edu`; the tables have names like `testing_order` and `testing_person`; to insert data you must be on `db8.cse.nd.edu`
+* User: `jboueri`
 * Pass: `pwpwpwpw`
 
 The project is called `ndeats` and is stored in `ndeats/ndeats`, the app that handles the API is currently called `ndeatsApp` and is located in `ndeats/ndeatsApp`. 
