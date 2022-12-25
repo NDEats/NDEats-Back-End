@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'testing',
+    'ndeatsApp',
 ]
 
 MIDDLEWARE = [
@@ -80,8 +80,8 @@ WSGI_APPLICATION = 'ndeats.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE'  : 'django.db.backends.mysql',
-        'NAME'    : 'jboueri',
-        'USER'    : 'jboueri',
+        'NAME'    : 'cboumalh',
+        'USER'    : 'cboumalh',
         'PASSWORD': 'pwpwpwpw',
         'HOST'    : 'localhost',
         'PORT'    : '3306',
