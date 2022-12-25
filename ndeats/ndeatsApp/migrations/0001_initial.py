@@ -32,8 +32,8 @@ class Migration(migrations.Migration):
                 ('tip', models.FloatField(default=1.0, validators=[django.core.validators.MinValueValidator(0.0), django.core.validators.MaxValueValidator(50.0)])),
                 ('available', models.BooleanField(default=True)),
                 ('readyBy', models.TimeField()),
-                ('delivererId', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='Deliverer', to='testing.person')),
-                ('ordererId', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='Orderer', to='testing.person')),
+                ('delivererId', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='Deliverer', to='ndeatsApp.person')),
+                ('ordererId', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='Orderer', to='ndeatsApp.person')),
             ],
         ),
         migrations.CreateModel(
@@ -44,8 +44,8 @@ class Migration(migrations.Migration):
                 ('pickup', models.CharField(max_length=200)),
                 ('tip', models.FloatField(default=1.0, validators=[django.core.validators.MinValueValidator(0.0), django.core.validators.MaxValueValidator(50.0)])),
                 ('readyBy', models.TimeField()),
-                ('delivererId', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='OldDeliverer', to='testing.person')),
-                ('ordererId', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='OldOrderer', to='testing.person')),
+                ('delivererId', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='OldDeliverer', to='ndeatsApp.person')),
+                ('ordererId', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='OldOrderer', to='ndeatsApp.person')),
             ],
         ),
     ]

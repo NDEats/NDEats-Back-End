@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'testing',
+    'ndeatsApp',
 ]
 
 MIDDLEWARE = [
